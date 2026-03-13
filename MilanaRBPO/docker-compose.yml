@@ -1,0 +1,36 @@
+services:
+
+  milanarbpo_postgres:
+    image: postgres:15
+    container_name: milanarbpo_postgres
+    restart: always
+
+    env_file:
+      - .env
+
+    environment:
+      POSTGRES_DB: milanarbpo_db
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+
+    ports:
+      - "5433:5432"
+
+    volumes:
+      - milanarbpo_postgres_data:/var/lib/postgresql/data
+
+  milanarbpo_app:
+    build: .
+    container_name: milanarbpo_app
+
+    depends_on:
+      - milanarbpo_postgres
+
+    env_file:
+      - .env
+
+    ports:
+      - "8080:8080"
+
+volumes:
+  milanarbpo_postgres_data:
