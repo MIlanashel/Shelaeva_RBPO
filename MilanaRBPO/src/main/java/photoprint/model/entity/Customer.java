@@ -1,8 +1,8 @@
 package photoprint.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -14,14 +14,13 @@ public class Customer {
     @SequenceGenerator(name = "customer_seq", sequenceName = "customer_seq", allocationSize = 50)
     private Long id;
 
-    @Column(nullable = false)
     private String name;
-
-    @Column(unique = true, nullable = false)
     private String email;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Order> orders = new   ArrayList<>();
+    @OneToMany(mappedBy = "customer")
+    @JsonManagedReference("customer-orders")
+    @JsonIgnore
+    private List<Order> orders;
 
     public Customer(String name, String email){
         this.name = name;
