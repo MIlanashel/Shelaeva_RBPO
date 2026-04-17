@@ -1,5 +1,6 @@
 package photoprint.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -19,6 +20,7 @@ public class Format {
     private Double price;
 
     @OneToMany(mappedBy = "format")
+    @JsonManagedReference("format-photos")
     private List<Photo> photos;
 
     public Format(String name, double price){
