@@ -1,5 +1,6 @@
 package photoprint.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -17,9 +18,11 @@ public class Photo {
 
     @ManyToOne
     @JoinColumn(name = "format_id", nullable = false)
+    @JsonIgnore
     private Format format;
 
     @ManyToMany(mappedBy = "photos")
+    @JsonIgnore
     private List<Order> orders;
 
     public Photo(String filename, Format format){
