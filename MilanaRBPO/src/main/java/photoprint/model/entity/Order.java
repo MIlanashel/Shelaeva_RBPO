@@ -1,5 +1,7 @@
 package photoprint.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -14,6 +16,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "customer_id", nullable = false)
+    @JsonIgnore
     private Customer customer;
 
     @ManyToMany
@@ -22,12 +25,14 @@ public class Order {
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "photo_id")
     )
+    @JsonManagedReference("order-photos")
     private List<Photo> photos;
 
     @Column(nullable = false)
     private Boolean paid = false;
 
     @OneToOne(mappedBy = "order")
+    @JsonManagedReference("order-delivery")
     private Delivery delivery;
 
     public Order() {
