@@ -17,8 +17,11 @@ public class Customer {
     private String name;
     private String email;
 
-    @OneToMany(mappedBy = "customer")
-    @JsonManagedReference("customer-orders")
+    @OneToMany(
+            mappedBy = "customer",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
     @JsonIgnore
     private List<Order> orders;
 
@@ -27,9 +30,18 @@ public class Customer {
         this.email = email;
     }
 
-    public Customer(){
+    public Customer(){}
 
+    public void addOrder(Order order) {
+        orders.add(order);
+        order.setCustomer(this);
     }
+
+    public void removeOrder(Order order) {
+        orders.remove(order);
+        order.setCustomer(null);
+    }
+
 
     public void setId(Long id) {
         this.id = id;
