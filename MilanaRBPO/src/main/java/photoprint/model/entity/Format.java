@@ -1,5 +1,6 @@
 package photoprint.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import java.util.List;
@@ -19,8 +20,12 @@ public class Format {
     @Column(nullable = false)
     private Double price;
 
-    @OneToMany(mappedBy = "format")
-    @JsonManagedReference("format-photos")
+    @OneToMany(
+            mappedBy = "format",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonIgnore
     private List<Photo> photos;
 
     public Format(String name, double price){
