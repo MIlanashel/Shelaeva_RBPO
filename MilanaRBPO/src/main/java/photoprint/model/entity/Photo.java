@@ -1,6 +1,7 @@
 package photoprint.model.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -16,9 +17,9 @@ public class Photo {
     @Column(unique = true, nullable = false)
     private String filename;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "format_id", nullable = false)
-    @JsonIgnore
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Format format;
 
     @ManyToMany(mappedBy = "photos")
@@ -56,6 +57,14 @@ public class Photo {
 
     public void setOrders(List<Order> orders) {
         this.orders = orders;
+    }
+
+    public Format getFormat() {
+        return format;
+    }
+
+    public void setFormat(Format format) {
+        this.format = format;
     }
 }
 
