@@ -14,21 +14,27 @@ public class DeliveryController {
         this.service = service;
     }
 
+    // CREATE
     @PostMapping
-    public Delivery create(@RequestBody Delivery delivery) {
-        return service.create(delivery);
+    public Delivery create(@RequestParam Long orderId,
+                           @RequestParam String address) {
+        return service.create(orderId, address);
     }
 
+    // GET
     @GetMapping("/{id}")
     public Delivery get(@PathVariable Long id) {
         return service.get(id);
     }
 
+    // UPDATE
     @PutMapping("/{id}")
-    public Delivery update(@PathVariable Long id, @RequestBody Delivery delivery) {
-        return service.update(id, delivery);
+    public Delivery update(@PathVariable Long id,
+                           @RequestParam String address) {
+        return service.update(id, address);
     }
 
+    // DELETE
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         service.delete(id);
