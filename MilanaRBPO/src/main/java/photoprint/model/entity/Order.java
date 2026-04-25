@@ -1,7 +1,6 @@
 package photoprint.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import java.util.List;
 
@@ -14,9 +13,9 @@ public class Order {
     @SequenceGenerator(name = "order_seq", sequenceName = "order_seq", allocationSize = 50)
     private Long id;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
-    @JsonIgnore
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Customer customer;
 
     @ManyToMany
@@ -25,49 +24,33 @@ public class Order {
             joinColumns = @JoinColumn(name = "order_id"),
             inverseJoinColumns = @JoinColumn(name = "photo_id")
     )
-    @JsonManagedReference("order-photos")
     private List<Photo> photos;
 
     @Column(nullable = false)
     private Boolean paid = false;
 
-    @OneToOne(mappedBy = "order")
-    @JsonManagedReference("order-delivery")
+    @OneToOne(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private Delivery delivery;
 
-    public Order() {
+    public Order() {}
 
-    }
-
-    // Геттеры и сеттеры
-    public Long getId() {
-        return id;
-    }
-    public void setId(Long id) {
-        this.id = id;
-    }
-    public Customer getCustomer() {
-        return customer;
-    }
-    public void setCustomer(Customer customer) {
-        this.customer = customer;
-    }
-    public List<Photo> getPhotos() {
-        return photos;
-    }
-    public void setPhotos(List<Photo> photos) {
-        this.photos = photos;
-    }
-    public Boolean getPaid() {
-        return paid;
-    }
-    public void setPaid(Boolean paid) {
-        this.paid = paid;
-    }
-    public Delivery getDelivery() {
-        return delivery;
-    }
     public void setDelivery(Delivery delivery) {
         this.delivery = delivery;
+        if (delivery != null) {
+            delivery.setOrder(this);
+        }
     }
+
+    public Long getId() { return id; }
+
+    public Customer getCustomer() { return customer; }
+    public void setCustomer(Customer customer) { this.customer = customer; }
+
+    public List<Photo> getPhotos() { return photos; }
+    public void setPhotos(List<Photo> photos) { this.photos = photos; }
+
+    public Boolean getPaid() { return paid; }
+    public void setPaid(Boolean paid) { this.paid = paid; }
+
+    public Delivery getDelivery() { return delivery; }
 }
