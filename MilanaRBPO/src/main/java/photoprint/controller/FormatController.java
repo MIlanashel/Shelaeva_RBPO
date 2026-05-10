@@ -5,7 +5,7 @@ import photoprint.service.FormatService;
 import photoprint.model.entity.Format;
 
 @RestController
-@RequestMapping("/formats")
+@RequestMapping("/api/formats")
 public class FormatController {
 
     private final FormatService service;
