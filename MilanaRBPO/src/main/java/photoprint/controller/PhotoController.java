@@ -5,7 +5,7 @@ import photoprint.service.PhotoService;
 import photoprint.model.entity.Photo;
 
 @RestController
-@RequestMapping("/photos")
+@RequestMapping("/api/photos")
 public class PhotoController {
 
     private final PhotoService service;
