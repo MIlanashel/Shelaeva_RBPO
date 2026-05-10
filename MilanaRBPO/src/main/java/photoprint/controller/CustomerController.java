@@ -5,7 +5,7 @@ import photoprint.model.entity.Customer;
 import photoprint.service.CustomerService;
 
 @RestController
-@RequestMapping("/customers")
+@RequestMapping("/api/customers")
 public class CustomerController {
 
     private final CustomerService service;
