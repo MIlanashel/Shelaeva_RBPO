@@ -5,7 +5,7 @@ import photoprint.service.DeliveryService;
 import photoprint.model.entity.Delivery;
 
 @RestController
-@RequestMapping("/deliveries")
+@RequestMapping("/api/deliveries")
 public class DeliveryController {
 
     private final DeliveryService service;
