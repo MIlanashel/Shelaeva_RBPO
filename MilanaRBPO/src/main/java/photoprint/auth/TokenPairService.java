@@ -24,7 +24,7 @@ public class TokenPairService {
         this.encoder = encoder;
     }
 
-    // 🔐 ЛОГИН (пароль проверяем)
+    // ЛОГИН (пароль проверяем)
     public TokenPairResponse login(String username, String rawPassword) {
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
@@ -36,7 +36,6 @@ public class TokenPairService {
         return issueTokenPair(user);
     }
 
-    // ♻️ REFRESH (БЕЗ пароля)
     public TokenPairResponse refresh(String refreshToken) {
         var claims = jwt.parse(refreshToken).getBody();
 
@@ -53,16 +52,14 @@ public class TokenPairService {
             throw new RuntimeException("Session revoked");
         }
 
-        // 🔁 Ротация refresh
         oldSession.setStatus(SessionStatus.REVOKED);
         sessionRepo.save(oldSession);
 
         return issueTokenPair(oldSession.getUser());
     }
 
-    // 🧠 ЕДИНАЯ точка генерации пары токенов
     private TokenPairResponse issueTokenPair(User user) {
-
+        // Создаём сессию для пользователя
         UserSession session = sessionRepo.save(
                 new UserSession(
                         user,
@@ -71,12 +68,28 @@ public class TokenPairService {
                 )
         );
 
+        // Генерация refresh токена
         String refresh = jwt.generateRefreshToken(user, session.getId());
-        session.setRefreshTokenHash(encoder.encode(refresh));
+
+        // Хэшируем refresh токен через SHA-256 вместо BCrypt
+        session.setRefreshTokenHash(sha256(refresh));
         sessionRepo.save(session);
 
+        // Генерация access токена
         String access = jwt.generateAccessToken(user, session.getId());
 
+        // Возвращаем оба токена
         return new TokenPairResponse(access, refresh);
+    }
+
+    // Метод SHA-256 для хэширования refresh токена
+    private String sha256(String input) {
+        try {
+            java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(input.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            return java.util.Base64.getEncoder().encodeToString(hash);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 }
