@@ -33,7 +33,18 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+
+                        // открытые эндпоинты
                         .requestMatchers("/auth/**").permitAll()
+
+                        // только ADMIN может менять данные
+                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/**").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.PUT, "/api/**").hasRole("ADMIN")
+                        .requestMatchers(org.springframework.http.HttpMethod.DELETE, "/api/**").hasRole("ADMIN")
+
+                        // все авторизованные могут читать
+                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/**").authenticated()
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(
