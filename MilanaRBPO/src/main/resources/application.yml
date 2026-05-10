@@ -21,4 +21,8 @@ spring:
   open-in-view: false
 
 server:
-  port: 8081
+  port: 8080
+
+logging:
+  level:
+    org.springframework.security: DEBUG
