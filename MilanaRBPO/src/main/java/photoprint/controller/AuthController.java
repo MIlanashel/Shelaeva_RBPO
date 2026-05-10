@@ -26,7 +26,7 @@ public class AuthController {
         this.tokenPairService = tokenPairService;
     }
 
-    // ✅ Регистрация
+    // Регистрация
     @PostMapping("/register")
     public ResponseEntity<String> register(
             @RequestBody @Valid UserRegistrationDto dto) {
@@ -47,13 +47,13 @@ public class AuthController {
         return ResponseEntity.ok("Пользователь успешно зарегистрирован");
     }
 
-    // ✅ Логин → access + refresh
+    // Логин → access + refresh
     @PostMapping("/login")
     public TokenPairResponse login(@RequestBody LoginRequest req) {
         return tokenPairService.login(req.getUsername(), req.getPassword());
     }
 
-    // ✅ Обновление токенов
+    // Обновление токенов
     @PostMapping("/refresh")
     public TokenPairResponse refresh(@RequestBody RefreshRequest req) {
         return tokenPairService.refresh(req.getRefreshToken());
